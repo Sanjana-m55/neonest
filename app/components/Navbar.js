@@ -7,10 +7,16 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "./ui/Button";
 import Chatbot from "./Chatbot";
 import { useAuth } from "../context/AuthContext";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Brain, Circle } from "lucide-react";
 
 const tabs = [
   { label: "home", path: "/" },
+  { 
+    label: "smart care", 
+    path: "/smart-care",
+    hasLiveDot: true,
+    className: "smart-care-nav"
+  },
   { label: "growth", path: "/Growth" },
   { label: "feeding", path: "/Feeding" },
   { label: "sleep", path: "/Sleep" },
@@ -107,17 +113,28 @@ const Navbar = () => {
 
             {/* Nav - Desktop */}
             <nav className="hidden md:flex items-center gap-4">
-              {tabs.map(({ label, path }) => (
+              {tabs.map(({ label, path, hasLiveDot, className }) => (
                 <Link
                   key={label}
                   href={path}
-                  className={`transition-colors capitalize ${
+                  className={`transition-colors capitalize relative ${className || ""} ${
                     pathname === path
                       ? "text-pink-600"
                       : "text-gray-600 hover:text-pink-600"
                   }`}
                 >
-                  {label}
+                  <span className="flex items-center gap-2">
+                    {label === "smart care" && <Brain size={16} />}
+                    {label}
+                    {hasLiveDot && (
+                      <Circle 
+                        className="live-indicator animate-pulse" 
+                        fill="#ef4444" 
+                        color="#ef4444"
+                        size={8} 
+                      />
+                    )}
+                  </span>
                 </Link>
               ))}
             </nav>
@@ -155,18 +172,29 @@ const Navbar = () => {
           {menuOpen && (
             <div className="md:hidden mt-4 space-y-3">
               <div className="flex flex-col gap-3">
-                {tabs.map(({ label, path }) => (
+                {tabs.map(({ label, path, hasLiveDot, className }) => (
                   <Link
                     key={label}
                     href={path}
                     onClick={() => setMenuOpen(false)}
-                    className={`block capitalize px-3 py-2 rounded-md text-sm ${
+                    className={`block capitalize px-3 py-2 rounded-md text-sm relative ${className || ""} ${
                       pathname === path
                         ? "text-pink-600 font-medium"
                         : "text-gray-700 hover:text-pink-600"
                     }`}
                   >
-                    {label}
+                    <span className="flex items-center gap-2">
+                      {label === "smart care" && <Brain size={16} />}
+                      {label}
+                      {hasLiveDot && (
+                        <Circle 
+                          className="live-indicator animate-pulse" 
+                          fill="#ef4444" 
+                          color="#ef4444"
+                          size={8} 
+                        />
+                      )}
+                    </span>
                   </Link>
                 ))}
               </div>
@@ -197,6 +225,27 @@ const Navbar = () => {
           )}
         </div>
       </header>
+
+      {/* Add Custom Styles for Smart Care */}
+      <style jsx>{`
+        .live-indicator {
+          animation: pulse 2s infinite;
+        }
+        
+        .smart-care-nav:hover .live-indicator {
+          animation: none;
+          opacity: 0.7;
+        }
+        
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+      `}</style>
     </>
   );
 };
